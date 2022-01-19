@@ -67,7 +67,6 @@ def generate_level():
 
 all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
-player_group = pygame.sprite.Group()
 generate_level()
 running = True
 pygame.init()
@@ -75,7 +74,14 @@ clock = pygame.time.Clock()
 size = WIDTH, HEIGHT = 1280, 730
 screen = pygame.display.set_mode(size)
 start_screen()
-
+fruits = pygame.sprite.Group()
+sprite = pygame.sprite.Sprite()
+# определим его вид
+data = ['Red_Apple.png.jpg', 'Coconut.jpg','Green_Apple.png', 'Mango.png', 'Pineapple.png']
+for im in data:
+    sprite.image = load_image(im)
+    sprite.rect = sprite.image.get_rect()
+    all_sprites.add(sprite)
 
 if __name__ == '__main__':
     while running:
@@ -88,7 +94,6 @@ if __name__ == '__main__':
         screen.fill('white')
         all_sprites.draw(screen)
         tiles_group.draw(screen)
-        player_group.draw(screen)
         pygame.display.flip()
         clock.tick(50)
     pygame.quit()
