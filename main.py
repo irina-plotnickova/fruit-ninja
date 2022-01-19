@@ -4,6 +4,8 @@ import os
 
 FPS = 50
 
+class Sprites():
+    pass
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
