@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import random
 
 FPS = 50
 
@@ -12,6 +13,22 @@ def load_image(name, colorkey=None):
         sys.exit()
     image = pygame.image.load(fullname)
     return image
+
+
+class Sprites(pygame.sprite.Sprite):
+    def __init__(self, im):
+        super().__init__(all_sprites)
+        self.image = load_image(im)
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(10, 700)
+        self.rect.y = 730
+
+    def update(self, *args):
+        self.rect = self.rect.move(0, -1)
+
+
+class AnimatedSprites(pygame.sprite.Sprite):
+    pass
 
 
 def terminate():
@@ -56,7 +73,7 @@ tile_width = tile_height = 50
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self):
-        super().__init__(tiles_group, all_sprites)
+        super().__init__(all_sprites)
         self.image = tile_images
         self.rect = self.image.get_rect()
 
@@ -65,8 +82,8 @@ def generate_level():
     Tile()
 
 
+pygame.init()
 all_sprites = pygame.sprite.Group()
-tiles_group = pygame.sprite.Group()
 generate_level()
 running = True
 pygame.init()
@@ -79,9 +96,7 @@ sprite = pygame.sprite.Sprite()
 # определим его вид
 data = ['Red_Apple.png', 'Coconut.png','Green_Apple.png', 'Mango.png', 'Pineapple.png']
 for im in data:
-    sprite.image = load_image(im)
-    sprite.rect = sprite.image.get_rect()
-    all_sprites.add(sprite)
+    Sprites(im)
 
 if __name__ == '__main__':
     while running:
@@ -93,7 +108,7 @@ if __name__ == '__main__':
                     pass
         screen.fill('white')
         all_sprites.draw(screen)
-        tiles_group.draw(screen)
+        all_sprites.update()
         pygame.display.flip()
         clock.tick(50)
     pygame.quit()
