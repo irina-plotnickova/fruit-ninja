@@ -4,12 +4,6 @@ import os
 
 FPS = 50
 
-class Sprites():
-    pass
-
-class AnimatedSprites():
-    pass
-
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
@@ -73,8 +67,6 @@ def generate_level():
 
 all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
-player_group = pygame.sprite.Group()
-cursor_group = pygame.sprite.Group()
 generate_level()
 running = True
 pygame.init()
@@ -82,25 +74,26 @@ clock = pygame.time.Clock()
 size = WIDTH, HEIGHT = 1280, 730
 screen = pygame.display.set_mode(size)
 start_screen()
-
+fruits = pygame.sprite.Group()
+sprite = pygame.sprite.Sprite()
+# определим его вид
+data = ['Red_Apple.png', 'Coconut.png','Green_Apple.png', 'Mango.png', 'Pineapple.png']
+for im in data:
+    sprite.image = load_image(im)
+    sprite.rect = sprite.image.get_rect()
+    all_sprites.add(sprite)
 
 if __name__ == '__main__':
-    cur_image = load_image('arrow.png')
-    cursor = pygame.sprite.Sprite(cursor_group)
-    cursor.image = cur_image
-    cursor.rect = cursor.image.get_rect()
-    pygame.mouse.set_visible(False)
     while running:
-        screen.fill('white')
-        all_sprites.draw(screen)
-        tiles_group.draw(screen)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEMOTION:
-                cursor.rect.x = event.pos[0]
-                cursor.rect.y = event.pos[1]
-        if pygame.mouse.get_focused():
-            cursor_group.draw(screen)
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    pass
+        screen.fill('white')
+        all_sprites.draw(screen)
+        tiles_group.draw(screen)
         pygame.display.flip()
+        clock.tick(50)
     pygame.quit()
