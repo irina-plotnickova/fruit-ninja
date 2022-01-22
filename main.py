@@ -99,7 +99,6 @@ for im in data:
     Sprites(im)
 
 if __name__ == '__main__':
-    pygame.mouse.set_visible(False)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
