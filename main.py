@@ -20,7 +20,7 @@ class Sprites(pygame.sprite.Sprite):
         super().__init__(all_sprites)
         self.image = load_image(im)
         self.rect = self.image.get_rect()
-        self.rect.x = random.randrange(10, 1000)
+        self.rect.x = random.randrange(10, 1001)
         self.rect.y = 730
 
     def update(self, *args):
