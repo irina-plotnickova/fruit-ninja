@@ -2,8 +2,14 @@ import pygame
 import sys
 import os
 import random
+import datetime
+import schedule
 
 FPS = 50
+PRICE = {'Red_Apple.png': 1,
+         'Coconut.png': 1, 'Green_Apple.png': 1, 'Mango.png': 1, 'Pineapple.png': 1, 'Strawberry.png': 1,
+         'Watermelon.png': 1, 'Banana.png': 1, 'Kiwi.png': 1, 'Lemon.png': 1, 'Lime.png': 1, 'Orange.png': 1,
+         'Pear.png': 1, 'Plum.png': 1}
 
 
 def load_image(name, colorkey=None):
@@ -18,17 +24,22 @@ def load_image(name, colorkey=None):
 class Sprites(pygame.sprite.Sprite):
     def __init__(self, im):
         super().__init__(all_sprites)
+        self.price = PRICE[im]
         self.image = load_image(im)
+        self.flag = False
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(10, 1001)
+        self.top = random.randrange(20, 150)
         self.rect.y = 730
 
     def update(self, *args):
-        self.rect = self.rect.move(0, -1)
-
-
-class AnimatedSprites(pygame.sprite.Sprite):
-    pass
+        if self.rect.y <= self.top:
+            self.flag = True
+        print(self.rect.y)
+        if self.flag:
+            self.rect = self.rect.move(0, 2)
+        else:
+            self.rect = self.rect.move(0, -2)
 
 
 def terminate():
@@ -93,13 +104,22 @@ screen = pygame.display.set_mode(size)
 start_screen()
 fruits = pygame.sprite.Group()
 sprite = pygame.sprite.Sprite()
-# определим его вид
-data = ['Red_Apple.png', 'Coconut.png','Green_Apple.png', 'Mango.png', 'Pineapple.png']
-for im in data:
-    Sprites(im)
+data = ['Red_Apple.png', 'Coconut.png','Green_Apple.png', 'Mango.png', 'Pineapple.png', 'Strawberry.png',
+        'Watermelon.png', 'Banana.png', 'Kiwi.png', 'Lemon.png', 'Lime.png', 'Orange.png', 'Pear.png',
+        'Plum.png']
+
+
+def job():
+    k = random.randrange(2, 5)
+    for i in range(k):
+        Sprites(data[random.randrange(0, 13)])
+
+
+schedule.every(5).seconds.do(job)
 
 if __name__ == '__main__':
     while running:
+        schedule.run_pending()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
