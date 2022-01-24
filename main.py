@@ -6,10 +6,15 @@ import datetime
 import schedule
 
 FPS = 50
-PRICE = {'Red_Apple.png': 1,
-         'Coconut.png': 1, 'Green_Apple.png': 1, 'Mango.png': 1, 'Pineapple.png': 1, 'Strawberry.png': 1,
-         'Watermelon.png': 1, 'Banana.png': 1, 'Kiwi.png': 1, 'Lemon.png': 1, 'Lime.png': 1, 'Orange.png': 1,
-         'Pear.png': 1, 'Plum.png': 1}
+PRICE = {'Red_Apple.png': 1, 'Coconut.png': 1, 'melon.png': 1, 'Mango.png': 1, 'Pineapple.png': 1,
+         'Watermelon.png': 1, 'Banana.png': 1, 'Kiwi.png': 1, 'Lemon.png': 1,
+         'Orange.png': 1, 'Pear.png': 1}
+NAME_CHANGE = {'Red_Apple.png': ['apple1.png', 'apple2.png'], 'Coconut.png': ['coco1.png', 'coc2.png'],
+               'melon.png': ['melon1.png', 'melon2.png'], 'Mango.png': ['mango1.png', 'mango2.png'],
+               'Pineapple.png': ['pn1.png', 'pn2.png'],
+               'Watermelon.png': ['watermelon1.png', 'watermelon2.png'], 'Banana.png': ['banana1.png', 'banana2.png'],
+               'Kiwi.png': ['kiwi1.png', 'kiwi2.png'], 'Lemon.png': ['lemon1.png', 'lemon2.png'],
+               'Orange.png': ['or1.png', 'or2.png'], 'Pear.png': ['pear1.png', 'pear2.png']}
 
 
 def load_image(name, colorkey=None):
@@ -22,24 +27,57 @@ def load_image(name, colorkey=None):
 
 
 class Sprites(pygame.sprite.Sprite):
-    def __init__(self, im):
+    def __init__(self, im, cut=False, *args):
         super().__init__(all_sprites)
-        self.price = PRICE[im]
+        self.name = im
+        self.price = 2
         self.image = load_image(im)
+        self.cut = cut
         self.flag = False
-        self.rect = self.image.get_rect()
-        self.rect.x = random.randrange(10, 1001)
-        self.top = random.randrange(20, 150)
-        self.rect.y = 730
+        if self.cut:
+            print(args[0])
+            self.rect = self.image.get_rect()
+            self.rect.y = args[0][1]
+            self.rect.x = args[0][0]
+        else:
+            self.rect = self.image.get_rect()
+            self.rect.x = random.randrange(10, 1001)
+            self.top = random.randrange(20, 150)
+            self.rect.y = 730
 
     def update(self, *args):
-        if self.rect.y <= self.top:
-            self.flag = True
-        print(self.rect.y)
-        if self.flag:
-            self.rect = self.rect.move(0, 2)
+        if not self.cut:
+            if self.rect.y <= self.top:
+                self.flag = True
+            if self.flag:
+                self.rect = self.rect.move(0, 2)
+            else:
+                self.rect = self.rect.move(0, -2)
         else:
-            self.rect = self.rect.move(0, -2)
+            self.rect = self.rect.move(0, 2)
+
+    def check(self, pos):
+        a, b, c, d = self.rect
+        if int(pos[0]) in range(self.rect.x, self.rect.x + self.rect[2]) and int(pos[1]) in range(self.rect.y, self.rect.y + self.rect[3]):
+            return True
+        return False
+
+    def change(self):
+        im = NAME_CHANGE[self.name]
+        for el in im:
+            Sprites(el, True, [self.rect[0], self.rect[1], self.rect[2], self.rect[3]])
+        all_sprites.remove(self)
+
+    def sliced(self):
+        return self.cut
+
+
+def get_click(pos):
+    for e in all_sprites:
+        if not e.sliced():
+            a = e.check(pos)
+            if a:
+                e.change()
 
 
 def terminate():
@@ -88,6 +126,15 @@ class Tile(pygame.sprite.Sprite):
         self.image = tile_images
         self.rect = self.image.get_rect()
 
+    def sliced(self):
+        return True
+
+    def check(self, pos):
+        return False
+
+    def change(self):
+        pass
+
 
 def generate_level():
     Tile()
@@ -104,18 +151,17 @@ screen = pygame.display.set_mode(size)
 start_screen()
 fruits = pygame.sprite.Group()
 sprite = pygame.sprite.Sprite()
-data = ['Red_Apple.png', 'Coconut.png','Green_Apple.png', 'Mango.png', 'Pineapple.png', 'Strawberry.png',
-        'Watermelon.png', 'Banana.png', 'Kiwi.png', 'Lemon.png', 'Lime.png', 'Orange.png', 'Pear.png',
-        'Plum.png']
+data = ['Red_Apple.png', 'Coconut.png', 'Mango.png', 'Pineapple.png',
+        'Watermelon.png', 'Banana.png', 'Kiwi.png', 'Lemon.png', 'Orange.png', 'Pear.png', 'melon.png']
 
 
 def job():
     k = random.randrange(2, 5)
     for i in range(k):
-        Sprites(data[random.randrange(0, 13)])
+        Sprites(data[random.randrange(0, 10)])
 
 
-schedule.every(5).seconds.do(job)
+schedule.every(2).seconds.do(job)
 
 if __name__ == '__main__':
     while running:
@@ -123,10 +169,11 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    pass
-        screen.fill('white')
+            if event.type == pygame.MOUSEMOTION:
+                get_click(event.pos)
+        for e in all_sprites:
+            if e.rect.x < 0 or e.rect.x > WIDTH or e.rect.y < 0 or e.rect.y > HEIGHT:
+                all_sprites.remove(e)
         all_sprites.draw(screen)
         all_sprites.update()
         pygame.display.flip()
