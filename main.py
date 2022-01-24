@@ -9,7 +9,7 @@ FPS = 50
 PRICE = {'Red_Apple.png': 1, 'Coconut.png': 1, 'melon.png': 1, 'Mango.png': 1, 'Pineapple.png': 1,
          'Watermelon.png': 1, 'Banana.png': 1, 'Kiwi.png': 1, 'Lemon.png': 1,
          'Orange.png': 1, 'Pear.png': 1}
-NAME_CHANGE = {'Red_Apple.png': ['apple1.png', 'apple2.png'], 'Coconut.png': ['coco1.png', 'coc2.png'],
+NAME_CHANGE = {'Red_Apple.png': ['apple12.png', 'apple2.png'], 'Coconut.png': ['coco1.png', 'coc2.png'],
                'melon.png': ['melon1.png', 'melon2.png'], 'Mango.png': ['mango1.png', 'mango2.png'],
                'Pineapple.png': ['pn1.png', 'pn2.png'],
                'Watermelon.png': ['watermelon1.png', 'watermelon2.png'], 'Banana.png': ['banana1.png', 'banana2.png'],
@@ -35,7 +35,6 @@ class Sprites(pygame.sprite.Sprite):
         self.cut = cut
         self.flag = False
         if self.cut:
-            print(args[0])
             self.rect = self.image.get_rect()
             self.rect.y = args[0][1]
             self.rect.x = args[0][0]
@@ -44,6 +43,7 @@ class Sprites(pygame.sprite.Sprite):
             self.rect.x = random.randrange(10, 1001)
             self.top = random.randrange(20, 150)
             self.rect.y = 730
+        print(self.rect)
 
     def update(self, *args):
         if not self.cut:
