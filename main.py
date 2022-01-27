@@ -81,9 +81,9 @@ class Sprites(pygame.sprite.Sprite):
         self.cut = cut
         self.flag = False
         if self.cut:
-            self.rect = self.image.get_rect()
-            self.rect.y = args[0][1]
-            self.rect.x = args[0][0]
+            self.rect = self.image.get_rect(center=(args[0][0], args[0][1]))
+            if self.rect[0] <= 0:
+                self.rect[0] = 0
         else:
             self.rect = self.image.get_rect()
             self.rect.x = random.randrange(10, 1001)
@@ -138,8 +138,10 @@ class Sprites(pygame.sprite.Sprite):
         global score
         score += 1
         im = NAME_CHANGE[self.name]
+        k = 0
         for el in im:
-            Sprites(el, True, [self.rect[0], self.rect[1], self.rect[2], self.rect[3]])
+            Sprites(el, True, [self.rect[0] + 50 * k, self.rect[1], self.rect[2], self.rect[3]])
+            k += 1
         all_sprites.remove(self)
 
     def sliced(self):
@@ -286,7 +288,7 @@ def job():
         Sprites(data[random.randrange(0, 13)])
 
 
-schedule.every(1).seconds.do(job)
+schedule.every(2).seconds.do(job)
 
 if __name__ == '__main__':
     while running:
