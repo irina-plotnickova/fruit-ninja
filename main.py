@@ -70,9 +70,34 @@ class Sprites(pygame.sprite.Sprite):
             self.rect = self.rect.move(0, 8)
 
     def check(self, pos):
-        if int(pos[0]) in range(self.rect.x, self.rect.x + self.rect[2]) and int(pos[1]) in range(self.rect.y, self.rect.y + self.rect[3]):
+        global extra_time, score
+        if int(pos[0]) in range(self.rect.x, self.rect.x + self.rect[2]) and int(pos[1]) in range(self.rect.y,
+                                                                                                  self.rect.y +
+                                                                                                  self.rect[
+                                                                                                      3]) and self.name == 'Bomb.png':
+            extra_time += 10
+            all_sprites.remove(self)
+            return False
+        elif int(pos[0]) in range(self.rect.x, self.rect.x + self.rect[2]) and int(pos[1]) in range(self.rect.y,
+                                                                                                  self.rect.y +
+                                                                                                  self.rect[
+                                                                                                      3]) and self.name == 'Score_2x_Banana.png':
+            score *= 2
+            all_sprites.remove(self)
+            return False
+        elif int(pos[0]) in range(self.rect.x, self.rect.x + self.rect[2]) and int(pos[1]) in range(self.rect.y,
+                                                                                                  self.rect.y +
+                                                                                                  self.rect[
+                                                                                                      3]) and self.name == '10seconds_Banana.png':
+            extra_time -= 10
+            all_sprites.remove(self)
+            return False
+        elif int(pos[0]) in range(self.rect.x, self.rect.x + self.rect[2]) and int(pos[1]) in range(self.rect.y,
+                                                                                                    self.rect.y +
+                                                                                                    self.rect[3]):
             return True
-        return False
+        else:
+            return False
 
     def change(self):
         global score
@@ -104,7 +129,7 @@ def draw_score(x, y, score):  # рисует счет
 
 
 def draw_time(x, y):
-    write_text(screen, f'Осталось {str(90 - round(end_time - start_time))} секунд', 30, x, y)
+    write_text(screen, f'Осталось {str(60 - round(end_time - start_time + extra_time))} секунд', 30, x, y)
 
 
 def game_over():  # завершение игры, вывод счета
@@ -201,11 +226,13 @@ size = WIDTH, HEIGHT = 1280, 730
 screen = pygame.display.set_mode(size)
 start_screen()
 start_time = time.time()
+extra_time = 0
 fruits = pygame.sprite.Group()
 sprite = pygame.sprite.Sprite()
-data = ['Red_Apple.png', 'Coconut.png', 'Mango.png', 'Pineapple.png',
+data = ['Red_Apple.png', 'Coconut.png', 'Mango.png', 'Pineapple.png', 'Bomb.png', 'Score_2x_Banana.png',
+        '10seconds_Banana.png',
         'Watermelon.png', 'Banana.png', 'Kiwi.png', 'Lemon.png', 'Orange.png', 'Pear.png', 'melon.png']
-
+# Score_2x_Banana удваивает счет, 10seconds_Banana добавляет 10 секунд времени, Bomb отнимает 10 секунд
 
 def job():
     k = random.randrange(2, 5)
@@ -227,7 +254,7 @@ if __name__ == '__main__':
         for e in all_sprites:
             if e.rect.x < 0 or e.rect.x > WIDTH or e.rect.y < 0 or e.rect.y > HEIGHT:
                 all_sprites.remove(e)
-        if round(end_time - start_time) == 90:
+        if round(end_time - start_time + extra_time) >= 60:
             game_over()
         all_sprites.draw(screen)
         all_sprites.update()
