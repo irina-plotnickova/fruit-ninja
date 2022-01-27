@@ -88,8 +88,8 @@ class Sprites(pygame.sprite.Sprite):
         elif int(pos[0]) in range(self.rect.x, self.rect.x + self.rect[2]) and int(pos[1]) in range(self.rect.y,
                                                                                                   self.rect.y +
                                                                                                   self.rect[
-                                                                                                      3]) and self.name == '10seconds_Banana.png':
-            extra_time -= 10
+                                                                                                      3]) and self.name == '5seconds_Banana.png':
+            extra_time -= 5
             all_sprites.remove(self)
             return False
         elif int(pos[0]) in range(self.rect.x, self.rect.x + self.rect[2]) and int(pos[1]) in range(self.rect.y,
@@ -230,9 +230,10 @@ extra_time = 0
 fruits = pygame.sprite.Group()
 sprite = pygame.sprite.Sprite()
 data = ['Red_Apple.png', 'Coconut.png', 'Mango.png', 'Pineapple.png', 'Bomb.png', 'Score_2x_Banana.png',
-        '10seconds_Banana.png',
+        '5seconds_Banana.png',
         'Watermelon.png', 'Banana.png', 'Kiwi.png', 'Lemon.png', 'Orange.png', 'Pear.png', 'melon.png']
-# Score_2x_Banana удваивает счет, 10seconds_Banana добавляет 10 секунд времени, Bomb отнимает 10 секунд
+# Score_2x_Banana удваивает счет, 10seconds_Banana добавляет 10 секунд времени, Bomb отнимает 5 секунд
+
 
 def job():
     k = random.randrange(2, 5)
